@@ -116,5 +116,3 @@ function chunkArrayInGroups(arr, size) {
 
 	return myArray;
 }
-
-setInterval(() => {}, 1000000);

@@ -18,4 +18,4 @@ Find server IPs based on server name and players in server.
 
 - serversPerWorker: Amount of servers each worker does - The higher the less workers get spawned
 - playersInServer: Array of strings containing **case sensitive** names we will use for filtering
-- serverName: Only get servers with this server name. Use `""` to get all servers.
+- serverName: Only get servers with this server name (**Case sensitive**). Use `""` to get all servers.
