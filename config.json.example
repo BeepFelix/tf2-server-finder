@@ -1,0 +1,5 @@
+{
+	"serversPerWorker": 10,
+	"playersInServer": [ "Gaben", "BeepFelix",  "Another one" ],
+	"serverName": ""
+}

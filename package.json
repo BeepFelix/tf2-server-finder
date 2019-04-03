@@ -1,0 +1,17 @@
+{
+  "name": "tf2-server-finder",
+  "version": "1.0.0",
+  "description": "Find server IPs based on server name and players in server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BeepFelix/tf2-server-finder.git"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "github.com/BeepFelix",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "gamedig": "^1.0.47",
+    "vmsq": "^2.1.0"
+  }
+}
