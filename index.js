@@ -1,44 +1,47 @@
 const Worker = require("worker_threads");
-const vmsq = require("vmsq");
+const request = require("request");
 require("events").EventEmitter.defaultMaxListeners = 200;
 
 const config = require("./config.json");
 
-let servers = [];
 let serverInfo = [];
-
-console.log("Collection server ips...");
 
 let options = { appid: 440 };
 if (config.serverName && config.serverName.length >= 1) {
 	options.name_match = config.serverName;
 }
 
-let stream = vmsq("hl2master.steampowered.com:27011", vmsq.ALL, options);
+(async () => {
+	console.log("Getting server list...");
 
-stream.on("data", (ip) => {
-	servers.push(ip);
+	let servers = await getJSON(config.steamWebAPIKey, 1000000, {
+		appid: 440,
+		name_match: config.serverName,
+		map: config.mapName,
+		...config.extraOptions
+	}).catch(console.error);
 
-	if (servers.length % 100 === 0) {
-		console.log("Got " + servers.length + "...");
-	}
-});
-stream.on("error", ending);
-stream.on("end", ending);
-
-async function ending(err) {
-	if (err) {
-		console.error(err);
+	if (typeof servers === "undefined") {
+		return;
 	}
 
+	if (typeof servers.response === "undefined") {
+		console.log(servers);
+		return;
+	}
+
+	if (typeof servers.response.servers === "undefined" || Array.isArray(servers.response.servers) === false) {
+		console.log(servers.response);
+		return;
+	}
+
+	servers = servers.response.servers;
 	console.log("Got " + servers.length + " server" + (servers.length === 1 ? "" : "s"));
-	console.log("Getting server information...");
 
 	let chunks = chunkArrayInGroups(servers, config.serversPerWorker);
 	let exitedWorkers = 0;
 
 	console.log("Spawning " + chunks.length + " worker" + (chunks.length === 1 ? "" : "s") + " each doing " + config.serversPerWorker + " server" + (config.serversPerWorker === 1 ? "" : "s"));
-	console.log("Expected wait time: " + (config.serversPerWorker * 5) + " seconds");
 
 	// Create worker for each chunk
 	for (let i = 0; i < chunks.length; i++) {
@@ -105,7 +108,7 @@ async function ending(err) {
 	} else {
 		console.log("All servers which match our desired arguments:\n" + validServers.map(s => s.name + ": " + s.query.host + ":" + s.query.port).join("\n"));
 	}
-}
+})();
 
 function chunkArrayInGroups(arr, size) {
 	let myArray = [];
@@ -115,4 +118,49 @@ function chunkArrayInGroups(arr, size) {
 	}
 
 	return myArray;
+}
+
+function getJSON(key, limit, filter = {}) {
+	return new Promise((resolve, reject) => {
+		let parsedFilter = "";
+		for (let key in filter) {
+			parsedFilter += "\\" + key + "\\" + filter[key];
+		}
+
+		let qs = {
+			key: key,
+			limit: limit
+		};
+
+		if (parsedFilter.length > 0) {
+			qs.filter = parsedFilter;
+		}
+
+		request({
+			uri: "https://api.steampowered.com/IGameServersService/GetServerList/v1/",
+			qs: qs
+		}, (err, res, body) => {
+			if (err) {
+				reject(err);
+				return;
+			}
+
+			if (res.statusCode !== 200) {
+				reject(new Error("Invalid Status Code: " + res.statusCode));
+				return;
+			}
+
+			let json = undefined;
+			try {
+				json = JSON.parse(body);
+			} catch(e) {};
+
+			if (json === undefined) {
+				reject(body);
+				return;
+			}
+
+			resolve(json);
+		});
+	});
 }

@@ -13,8 +13,10 @@ const servers = Worker.workerData;
 	for (let server of servers) {
 		let data = await Gamedig.query({
 			type: "tf2",
-			host: server.split(":")[0],
-			port: server.split(":")[1]
+			host: server.addr.split(":")[0],
+			port: server.addr.split(":")[1],
+			maxAttempts: 3,
+			attemptTimeout: 10000
 		}).catch((err) => {
 			Worker.parentPort.postMessage({ status: 1, worker: Worker.threadId, error: err });
 		});

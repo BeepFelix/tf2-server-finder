@@ -12,6 +12,6 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "gamedig": "^1.0.47",
-    "vmsq": "^2.1.0"
+    "request": "^2.88.0"
   }
 }

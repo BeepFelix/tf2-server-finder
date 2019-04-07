@@ -1,5 +1,8 @@
 {
-	"serversPerWorker": 10,
-	"playersInServer": [ "Gaben", "BeepFelix",  "Another one" ],
-	"serverName": ""
+	"serversPerWorker": 30,
+	"steamWebAPIKey": "ABCDEFGHIJKLNOPQRSTUVWYZ1234567890",
+	"serverName": "*Valve*",
+	"mapName": "pl_frontier_final",
+	"playersInServer": [ "player1", "Player2", "RememberCaseSensitive" ],
+	"extraOptions": {}
 }
