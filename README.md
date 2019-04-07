@@ -41,4 +41,4 @@ Use `{}` for no extra options
 
 ---
 
-Getting too many servers is not good, I recommend adding `empty` to `1` in the `extraOptions`.
+Getting too many servers is not good, I recommend setting `empty` to `1` in the `extraOptions`.

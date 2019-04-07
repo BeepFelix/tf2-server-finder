@@ -4,13 +4,6 @@ require("events").EventEmitter.defaultMaxListeners = 200;
 
 const config = require("./config.json");
 
-let serverInfo = [];
-
-let options = { appid: 440 };
-if (config.serverName && config.serverName.length >= 1) {
-	options.name_match = config.serverName;
-}
-
 (async () => {
 	console.log("Getting server list...");
 
@@ -42,6 +35,8 @@ if (config.serverName && config.serverName.length >= 1) {
 	let exitedWorkers = 0;
 
 	console.log("Spawning " + chunks.length + " worker" + (chunks.length === 1 ? "" : "s") + " each doing " + config.serversPerWorker + " server" + (config.serversPerWorker === 1 ? "" : "s"));
+
+	let serverInfo = [];
 
 	// Create worker for each chunk
 	for (let i = 0; i < chunks.length; i++) {
